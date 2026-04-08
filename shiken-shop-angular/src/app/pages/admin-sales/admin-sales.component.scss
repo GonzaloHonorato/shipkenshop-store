@@ -1,0 +1,419 @@
+/* ===================================
+   ADMIN SALES ANIMATIONS & STYLES
+   =================================== */
+
+// Keyframe animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Animation classes
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.3s ease-out forwards;
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-slide-down {
+  animation: slideDown 0.2s ease-out forwards;
+}
+
+/* ===================================
+   TABLE STYLES
+   =================================== */
+
+tbody tr {
+  animation: fadeIn 0.3s ease-out;
+  
+  &:hover {
+    background-color: rgba(79, 70, 229, 0.1);
+    transition: all 0.2s ease;
+    transform: translateX(4px);
+  }
+}
+
+/* ===================================
+   STATS CARDS
+   =================================== */
+
+.stat-card {
+  animation: fadeIn 0.5s ease-out;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(99, 102, 241, 0.15);
+  }
+}
+
+/* ===================================
+   STATUS BADGES
+   =================================== */
+
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  animation: fadeIn 0.3s ease-out;
+  transition: all 0.2s ease;
+  border-width: 1px;
+  
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+// Status specific styles
+.badge-pending {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(245, 158, 11, 0.2));
+  color: rgb(253, 224, 71);
+  border-color: rgba(251, 191, 36, 0.3);
+}
+
+.badge-confirmed {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(37, 99, 235, 0.2));
+  color: rgb(147, 197, 253);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.badge-processing {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(79, 70, 229, 0.2));
+  color: rgb(196, 181, 253);
+  border-color: rgba(99, 102, 241, 0.3);
+}
+
+.badge-shipped {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(124, 58, 237, 0.2));
+  color: rgb(196, 181, 253);
+  border-color: rgba(139, 92, 246, 0.3);
+}
+
+.badge-completed {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(22, 163, 74, 0.2));
+  color: rgb(134, 239, 172);
+  border-color: rgba(34, 197, 94, 0.3);
+}
+
+.badge-cancelled {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.2));
+  color: rgb(252, 165, 165);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+/* ===================================
+   ACTION BUTTONS
+   =================================== */
+
+.action-btn {
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+  }
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    
+    &::before {
+      left: 100%;
+    }
+  }
+}
+
+.view-btn:hover {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(37, 99, 235, 0.2));
+  border-color: rgba(59, 130, 246, 0.5);
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+
+/* ===================================
+   MODAL ENHANCEMENTS
+   =================================== */
+
+.modal-overlay {
+  backdrop-filter: blur(8px);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal-content {
+  animation: scaleIn 0.3s ease-out;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+}
+
+/* ===================================
+   PRODUCT ITEMS IN MODAL
+   =================================== */
+
+.product-item {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  background: rgba(31, 41, 55, 0.3);
+  border-radius: 0.5rem;
+  border: 1px solid rgba(55, 65, 81, 0.5);
+  transition: all 0.2s ease;
+  animation: slideDown 0.2s ease-out;
+  
+  &:hover {
+    background: rgba(31, 41, 55, 0.5);
+    border-color: rgba(99, 102, 241, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  img {
+    border-radius: 0.5rem;
+    object-fit: cover;
+    margin-right: 1rem;
+    flex-shrink: 0;
+  }
+  
+  .product-info {
+    flex: 1;
+    
+    h4 {
+      color: white;
+      font-weight: 500;
+      margin-bottom: 0.25rem;
+    }
+    
+    p {
+      color: rgb(156, 163, 175);
+      font-size: 0.875rem;
+    }
+  }
+  
+  .product-total {
+    color: white;
+    font-weight: bold;
+    font-size: 1rem;
+  }
+}
+
+/* ===================================
+   FORM ENHANCEMENTS
+   =================================== */
+
+input, select {
+  transition: all 0.3s ease;
+  
+  &:focus {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.2);
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+/* ===================================
+   LOADING STATES
+   =================================== */
+
+.loading-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-skeleton {
+  background: linear-gradient(90deg, rgba(31, 41, 55, 0.5) 25%, rgba(55, 65, 81, 0.5) 50%, rgba(31, 41, 55, 0.5) 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ===================================
+   RESPONSIVE DESIGN
+   =================================== */
+
+@media (max-width: 768px) {
+  .grid {
+    gap: 1rem;
+  }
+  
+  .table-container {
+    overflow-x: auto;
+  }
+  
+  tbody tr:hover {
+    transform: none;
+  }
+  
+  .modal-content {
+    margin: 1rem;
+    max-height: calc(100vh - 2rem);
+  }
+  
+  .product-item {
+    flex-direction: column;
+    text-align: center;
+    
+    img {
+      margin-right: 0;
+      margin-bottom: 0.5rem;
+    }
+  }
+}
+
+/* ===================================
+   UTILITY CLASSES
+   =================================== */
+
+.text-shadow {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.glass-effect {
+  backdrop-filter: blur(16px);
+  background: rgba(31, 41, 55, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.gradient-border {
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.5), rgba(139, 92, 246, 0.5));
+    border-radius: inherit;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: xor;
+  }
+}
+
+/* ===================================
+   ICON FALLBACK SYSTEM
+   =================================== */
+
+// Hide SVG fallback when FontAwesome is available
+.fas:not(.fa-fallback) + .fas-fallback {
+  display: none !important;
+}
+
+// Show SVG fallback when FontAwesome is not available
+.fa-fallback,
+.fas-fallback {
+  display: inline-block !important;
+}
+
+/* ===================================
+   SCROLLBAR STYLING
+   =================================== */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(31, 41, 55, 0.5);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.5), rgba(139, 92, 246, 0.5));
+  border-radius: 4px;
+  transition: background 0.3s ease;
+  
+  &:hover {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.7), rgba(139, 92, 246, 0.7));
+  }
+}
+
+/* ===================================
+   HOVER EFFECTS
+   =================================== */
+
+.hover-glow {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+    border-color: rgba(99, 102, 241, 0.6);
+  }
+}
+
+.hover-lift {
+  transition: transform 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+  }
+}

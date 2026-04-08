@@ -1,0 +1,42 @@
+[
+  {
+    "name": "Administrador Principal",
+    "email": "admin@shikenshop.com",
+    "password": "Admin123",
+    "role": "admin",
+    "active": true,
+    "registeredAt": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "name": "Juan Pérez",
+    "email": "comprador@test.com",
+    "password": "Comprador123",
+    "role": "buyer",
+    "active": true,
+    "registeredAt": "2024-06-15T00:00:00.000Z"
+  },
+  {
+    "name": "María Gómez",
+    "email": "maria.gomez@test.com",
+    "password": "Maria123",
+    "role": "buyer",
+    "active": true,
+    "registeredAt": "2024-09-10T00:00:00.000Z"
+  },
+  {
+    "name": "Carlos Rodríguez",
+    "email": "carlos.rodriguez@test.com",
+    "password": "Carlos123",
+    "role": "buyer",
+    "active": true,
+    "registeredAt": "2024-08-20T00:00:00.000Z"
+  },
+  {
+    "name": "Ana Silva",
+    "email": "ana.silva@test.com",
+    "password": "Ana123",
+    "role": "buyer",
+    "active": true,
+    "registeredAt": "2024-10-05T00:00:00.000Z"
+  }
+]

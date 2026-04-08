@@ -1,0 +1,214 @@
+// ===================================
+// CART COMPONENT STYLES
+// ===================================
+
+// Animation for cart items entering
+@keyframes cart-item-enter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Animation for modal appearing
+@keyframes modal-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+// Cart item animations
+.cart-item-enter {
+  animation: cart-item-enter 0.6s ease-out;
+  animation-fill-mode: both;
+  
+  // Stagger effect for multiple items
+  @for $i from 1 through 10 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{($i - 1) * 0.1s};
+    }
+  }
+}
+
+// Modal animations
+.modal-enter {
+  animation: modal-enter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+// Quantity button hover effects
+.quantity-btn {
+  &:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(147, 51, 234, 0.4);
+  }
+  
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+// Price update animation
+@keyframes price-update {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+    color: #f59e0b; // amber-500
+  }
+}
+
+.price-update {
+  animation: price-update 0.3s ease-in-out;
+}
+
+// Remove button hover effect
+.remove-btn {
+  transition: all 0.2s ease;
+  
+  &:hover {
+    transform: scale(1.1);
+    filter: drop-shadow(0 4px 8px rgba(239, 68, 68, 0.4));
+  }
+}
+
+// Checkout button loading state
+.checkout-loading {
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Empty cart illustration
+.empty-cart-icon {
+  filter: drop-shadow(0 10px 25px rgba(147, 51, 234, 0.2));
+}
+
+// Discount badge glow
+.discount-badge {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(236, 72, 153, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(236, 72, 153, 0.8);
+  }
+}
+
+// Product image hover effect
+.product-image {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+}
+
+// Cart summary card hover
+.cart-summary {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(147, 51, 234, 0.2);
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .cart-item-enter {
+    animation-delay: 0s !important; // Remove stagger on mobile for performance
+  }
+  
+  .modal-enter {
+    animation-duration: 0.2s; // Faster on mobile
+  }
+}
+
+// Dark theme enhancements
+:host {
+  .bg-opacity-90 {
+    backdrop-filter: blur(10px);
+  }
+  
+  // Custom scrollbar for the cart area
+  .cart-area {
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: rgba(75, 85, 99, 0.1);
+      border-radius: 3px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: rgba(147, 51, 234, 0.5);
+      border-radius: 3px;
+      
+      &:hover {
+        background: rgba(147, 51, 234, 0.7);
+      }
+    }
+  }
+}
+
+// Focus states for accessibility
+button:focus-visible {
+  box-shadow: 0 0 0 2px #6b21a8, 0 0 0 4px #374151;
+  outline: none;
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+  .text-gray-400 {
+    color: #e5e7eb;
+  }
+  
+  .border-purple-500\/30 {
+    border-color: #a855f7;
+  }
+}
+
+// Reduced motion support
+@media (prefers-reduced-motion: reduce) {
+  .cart-item-enter,
+  .modal-enter,
+  .quantity-btn,
+  .remove-btn,
+  .product-image,
+  .cart-summary {
+    animation: none;
+    transition: none;
+  }
+}

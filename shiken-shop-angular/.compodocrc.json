@@ -1,0 +1,17 @@
+{
+  "port": 8080,
+  "theme": "material",
+  "hideGenerator": false,
+  "disableCoverage": false,
+  "disablePrivate": false,
+  "disableProtected": false,
+  "disableInternal": false,
+  "disableLifeCycleHooks": false,
+  "disableRoutesGraph": false,
+  "disableSearch": false,
+  "disableDependencies": false,
+  "includeVersion": true,
+  "customLogo": "",
+  "customFavicon": "",
+  "output": "documentation/compodoc"
+}

@@ -1,0 +1,21 @@
+{
+  "port": 8080,
+  "theme": "material",
+  "output": "documentation/compodoc",
+  "tsconfig": "tsconfig.json",
+  "includes": "",
+  "includesName": "Documentación adicional",
+  "disableCoverage": false,
+  "disablePrivate": false,
+  "disableProtected": false,
+  "disableInternal": false,
+  "disableLifeCycleHooks": false,
+  "disableRoutesGraph": false,
+  "disableSearch": false,
+  "disableDependencies": false,
+  "silent": false,
+  "hideGenerator": false,
+  "customFavicon": "",
+  "customLogo": "",
+  "language": "es-ES"
+}

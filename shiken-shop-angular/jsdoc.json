@@ -1,0 +1,22 @@
+{
+  "source": {
+    "include": ["src"],
+    "includePattern": ".+\\.ts(doc|x)?$",
+    "excludePattern": "(node_modules/|docs|.spec.ts)"
+  },
+  "opts": {
+    "destination": "./documentation/jsdoc",
+    "recurse": true,
+    "readme": "./README.md",
+    "template": "node_modules/docdash"
+  },
+  "plugins": ["plugins/markdown"],
+  "templates": {
+    "cleverLinks": true,
+    "monospaceLinks": false,
+    "default": {
+      "outputSourceFiles": true,
+      "includeDate": false
+    }
+  }
+}

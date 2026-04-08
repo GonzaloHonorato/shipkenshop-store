@@ -1,0 +1,8 @@
+# Netlify redirects file for Angular SPA
+# Redirect all routes to index.html for Angular Router to handle
+
+# API routes (si tienes APIs externas)
+/api/*  https://api.example.com/:splat  200
+
+# Handle Angular routes - redirect all to index.html
+/*    /index.html   200

@@ -1,0 +1,176 @@
+<!-- Header -->
+<header class="bg-opacity-90 bg-gray-900 backdrop-blur-sm fixed w-full top-0 z-50 shadow-lg border-b-2 border-purple-500">
+  <nav class="container mx-auto px-4 py-4">
+    <div class="flex items-center justify-between">
+      <button (click)="navigateToHome()">
+        <h1 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
+          ShikenShop
+        </h1>
+      </button>
+      <div class="flex items-center space-x-6">
+        <button (click)="navigateToHome()" class="text-white hover:text-purple-400 transition-colors">
+          Inicio
+        </button>
+        <button (click)="navigateToAccount()" class="text-white hover:text-purple-400 transition-colors">
+          Mi Cuenta
+        </button>
+        <button (click)="logout()" class="text-red-400 hover:text-red-300 transition-colors">
+          Cerrar Sesión
+        </button>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- Main Content -->
+<main class="container mx-auto px-4 pt-24 pb-12">
+  
+  <!-- Page Title -->
+  <div class="mb-8 animate-fade-in">
+    <h1 class="text-4xl font-bold text-white mb-2">Mi Panel</h1>
+    <p class="text-gray-400">Bienvenido, <span class="text-purple-400">{{ userName() }}</span></p>
+  </div>
+
+  <!-- Dashboard Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+    @for (card of dashboardCards(); track card.route) {
+      <button 
+        (click)="navigateToCard(card.route)"
+        class="dashboard-card bg-gray-800/50 backdrop-blur-lg rounded-2xl p-6 border border-purple-500/20 hover:border-purple-500/50 transition-all hover:transform hover:scale-105 text-left group animate-fade-in">
+        
+        <div class="flex items-center mb-4">
+          <div [class]="'w-12 h-12 rounded-lg flex items-center justify-center mr-4 group-hover:scale-110 transition-transform ' + card.bgColor">
+            <i [class]="card.icon + ' text-white text-xl'"></i>
+          </div>
+          <div>
+            <h3 class="text-xl font-bold text-white group-hover:text-purple-300 transition-colors">
+              {{ card.title }}
+            </h3>
+            <p class="text-gray-400 text-sm">
+              @if (card.count !== undefined) {
+                {{ card.count }} {{ card.count === 1 ? 'item' : 'items' }}
+              } @else {
+                Gestionar
+              }
+            </p>
+          </div>
+        </div>
+        
+        <p class="text-gray-300 text-sm group-hover:text-gray-200 transition-colors">
+          {{ card.description }}
+        </p>
+      </button>
+    }
+  </div>
+
+  <!-- Recent Orders Section -->
+  @if (recentOrders().length > 0) {
+    <div class="mb-12 animate-fade-in">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-white">Pedidos Recientes</h2>
+        <button 
+          (click)="navigateToCard('/buyer/mis-compras')"
+          class="text-purple-400 hover:text-purple-300 transition-colors text-sm font-medium">
+          Ver todos →
+        </button>
+      </div>
+      
+      <div class="bg-gray-800/50 backdrop-blur-lg rounded-2xl border border-purple-500/20 overflow-hidden">
+        <div class="divide-y divide-gray-700">
+          @for (order of recentOrders(); track order.orderNumber) {
+            <div class="p-6 hover:bg-gray-700/30 transition-colors">
+              <div class="flex items-center justify-between">
+                <div class="flex-1">
+                  <div class="flex items-center space-x-4 mb-2">
+                    <span class="text-white font-medium">#{{ order.orderNumber.substring(0, 8) }}</span>
+                    <span [class]="'px-2 py-1 text-xs font-semibold rounded-full border ' + getOrderStatusClass(order.status)">
+                      {{ getOrderStatusText(order.status) }}
+                    </span>
+                  </div>
+                  <p class="text-gray-400 text-sm">{{ formatDate(order.createdAt) }}</p>
+                  <p class="text-gray-300 text-sm">{{ order.items.length }} producto{{ order.items.length > 1 ? 's' : '' }}</p>
+                </div>
+                <div class="text-right">
+                  <p class="text-white font-bold text-lg">{{ formatCurrency(order.total) }}</p>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Featured Products Section -->
+  @if (featuredProducts().length > 0) {
+    <div class="mb-12 animate-fade-in">
+      <h2 class="text-2xl font-bold text-white mb-6">Productos Recomendados</h2>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        @for (product of featuredProducts().slice(0, 4); track product.id) {
+          <div class="bg-gray-800/50 backdrop-blur-lg rounded-xl overflow-hidden border border-purple-500/20 hover:border-purple-500/50 transition-all hover:transform hover:scale-105 group">
+            <div class="aspect-square overflow-hidden">
+              <img 
+                [src]="product.image" 
+                [alt]="product.name"
+                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+            </div>
+            <div class="p-4">
+              <h3 class="font-bold text-white mb-1 group-hover:text-purple-300 transition-colors">{{ product.name }}</h3>
+              <p class="text-gray-400 text-sm mb-2 capitalize">{{ product.category }}</p>
+              <div class="flex items-center justify-between">
+                @if (product.discount > 0) {
+                  <div class="flex items-center space-x-2">
+                    <span class="text-lg font-bold text-purple-400">{{ formatCurrency(product.price) }}</span>
+                    <span class="text-sm text-gray-500 line-through">{{ formatCurrency(product.originalPrice) }}</span>
+                  </div>
+                } @else {
+                  <span class="text-lg font-bold text-purple-400">{{ formatCurrency(product.price) }}</span>
+                }
+                <button 
+                  routerLink="/categories/{{ product.category }}"
+                  class="px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white text-sm rounded-lg transition-colors">
+                  Ver
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- Quick Category Access -->
+  <div class="animate-fade-in">
+    <h2 class="text-2xl font-bold text-white mb-6">Explorar Catálogo</h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      @for (category of categoryQuickAccess; track category.route) {
+        <button 
+          (click)="navigateToCategory(category.route)"
+          [class]="'category-quick bg-gradient-to-br rounded-xl p-6 text-center hover:transform hover:scale-105 transition-all group ' + category.gradient">
+          <div class="text-4xl mb-2 group-hover:scale-110 transition-transform">{{ category.emoji }}</div>
+          <h3 class="text-white font-bold group-hover:text-gray-100 transition-colors">{{ category.name }}</h3>
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Empty State for New Users -->
+  @if (recentOrders().length === 0) {
+    <div class="text-center py-12 animate-fade-in">
+      <div class="bg-gray-800/50 backdrop-blur-lg rounded-2xl border border-purple-500/20 p-12">
+        <div class="text-6xl mb-4">🎮</div>
+        <h3 class="text-2xl font-bold text-white mb-2">¡Bienvenido a ShikenShop!</h3>
+        <p class="text-gray-400 mb-6">
+          Parece que aún no has hecho ninguna compra. ¡Explora nuestro catálogo y encuentra tus juegos favoritos!
+        </p>
+        <button 
+          (click)="navigateToHome()"
+          class="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-200 transform hover:scale-105">
+          Explorar Juegos
+        </button>
+      </div>
+    </div>
+  }
+
+</main>

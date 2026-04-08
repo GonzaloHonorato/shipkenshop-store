@@ -1,0 +1,230 @@
+<div class="min-h-screen" [style.background]="getPageBackground()">
+  <!-- Banner de categoría -->
+  <section class="pt-32 pb-12 px-4" 
+           [style.background]="getBannerBackground()">
+    <div class="container mx-auto text-center">
+      <div class="inline-block mb-6 bounce-animation">
+        <div [innerHTML]="config().icon" 
+             class="w-24 h-24 text-6xl"
+             [ngClass]="'text-' + config().accentColor">
+        </div>
+      </div>
+      <h1 class="text-5xl md:text-6xl font-bold text-white mb-4 category-title">
+        {{ config().title }}
+      </h1>
+      <p class="text-xl text-gray-300 max-w-2xl mx-auto">
+        {{ config().description }}
+      </p>
+    </div>
+  </section>
+
+  <!-- Filtros y ordenamiento -->
+  <section class="py-6 px-4 bg-black bg-opacity-30">
+    <div class="container mx-auto">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+        <!-- Contador de productos -->
+        <div class="text-white">
+          <span class="text-2xl font-bold">{{ filteredProducts().length }}</span>
+          <span class="text-gray-300 ml-2">juegos encontrados</span>
+        </div>
+
+        <!-- Filtros y ordenamiento -->
+        <div class="flex flex-col md:flex-row gap-4 items-center">
+          <!-- Filtro por precio -->
+          <select 
+            (change)="onPriceFilterChange($event)"
+            class="bg-gray-800 text-white px-4 py-2 rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none">
+            <option value="">Todos los precios</option>
+            <option value="0-30000">Hasta $30.000</option>
+            <option value="30000-50000">$30.000 - $50.000</option>
+            <option value="50000-70000">$50.000 - $70.000</option>
+            <option value="70000-999999">Más de $70.000</option>
+          </select>
+
+          <!-- Ordenamiento -->
+          <select 
+            (change)="onSortChange($event)"
+            class="bg-gray-800 text-white px-4 py-2 rounded-lg border border-gray-600 focus:border-purple-500 focus:outline-none">
+            <option value="name">Nombre A-Z</option>
+            <option value="price-asc">Precio: Menor a Mayor</option>
+            <option value="price-desc">Precio: Mayor a Menor</option>
+            <option value="rating">Mejor Valorados</option>
+            <option value="newest">Más Nuevos</option>
+          </select>
+
+          <!-- Filtro solo ofertas -->
+          <label class="flex items-center text-white cursor-pointer">
+            <input 
+              type="checkbox" 
+              (change)="onDiscountFilterChange($event)"
+              class="mr-2 w-4 h-4 text-purple-600 bg-gray-800 border-gray-600 rounded focus:ring-purple-500">
+            <span>Solo ofertas</span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Grid de juegos -->
+  <section class="pb-20 px-4">
+    <div class="container mx-auto">
+      <div *ngIf="filteredProducts().length > 0; else emptyState" 
+           class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div *ngFor="let product of filteredProducts(); trackBy: trackByProductId"
+             class="game-card bg-gray-800 bg-opacity-50 backdrop-blur-sm rounded-2xl overflow-hidden shadow-2xl border transition-all duration-300 hover:scale-105 hover:shadow-3xl"
+             [ngClass]="'border-' + config().accentColor + '-500/30'">
+
+          <!-- Imagen del producto con enlace -->
+          <a [routerLink]="['/product', product.id]"
+             class="relative h-64 overflow-hidden block"
+             [ngClass]="'bg-gradient-to-br from-' + config().gradientFrom + '-600 to-' + config().gradientTo + '-600'">
+            <img
+              *ngIf="product.image; else placeholderImage"
+              [src]="product.image"
+              [alt]="product.name"
+              class="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
+              loading="lazy">
+            
+            <ng-template #placeholderImage>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <div class="text-center">
+                  <div [innerHTML]="config().icon" 
+                       class="w-32 h-32 text-white opacity-80 mx-auto mb-4">
+                  </div>
+                  <p class="text-white font-semibold">{{ product.name }}</p>
+                </div>
+              </div>
+            </ng-template>
+            
+            <!-- Badge de descuento -->
+            <div *ngIf="product.discount && product.discount > 0" 
+                 class="absolute top-4 right-4">
+              <span [class]="getBadgeClasses()">
+                -{{ product.discount }}% OFF
+              </span>
+            </div>
+            
+            <!-- Badge destacado -->
+            <div *ngIf="product.featured"
+                 class="absolute top-4 left-4">
+              <span class="bg-yellow-500 text-black px-2 py-1 rounded-full text-xs font-bold">
+                ⭐ Destacado
+              </span>
+            </div>
+          </a>
+          
+          <!-- Información del producto -->
+          <div class="p-6">
+            <a [routerLink]="['/product', product.id]">
+              <h3 class="text-2xl font-bold text-white mb-2 hover:text-gray-300 transition-colors cursor-pointer">
+                {{ product.name }}
+              </h3>
+            </a>
+            <p class="text-gray-300 mb-4 line-clamp-3">
+              {{ product.description }}
+            </p>
+            
+            <!-- Rating y reviews -->
+            <div *ngIf="product.rating && product.reviews" 
+                 class="flex items-center mb-4">
+              <div class="flex items-center">
+                <span *ngFor="let star of getStars(product.rating)" 
+                      class="text-yellow-400">{{ star }}</span>
+              </div>
+              <span class="text-gray-400 ml-2 text-sm">
+                {{ product.rating }} ({{ product.reviews }} reseñas)
+              </span>
+            </div>
+            
+            <!-- Plataformas -->
+            <div *ngIf="product.platform && product.platform.length > 0" 
+                 class="mb-4">
+              <div class="flex flex-wrap gap-1">
+                <span *ngFor="let platform of product.platform" 
+                      class="bg-gray-700 text-gray-300 px-2 py-1 rounded text-xs">
+                  {{ platform }}
+                </span>
+              </div>
+            </div>
+            
+            <!-- Precios -->
+            <div class="mb-4">
+              <p *ngIf="product.originalPrice && product.originalPrice > product.price"
+                 class="text-gray-400 line-through text-sm">
+                ${{ formatPrice(product.originalPrice) }}
+              </p>
+              <p class="text-3xl font-bold"
+                 [style.color]="getPriceColor()">
+                ${{ formatPrice(product.price) }}
+              </p>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="flex gap-3">
+              <a
+                [routerLink]="['/product', product.id]"
+                class="flex-1 bg-gray-700 hover:bg-gray-600 text-white px-4 py-3 rounded-lg font-semibold transition-all duration-300 text-center flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                </svg>
+                Ver
+              </a>
+
+              <button
+                (click)="addToCart(product)"
+                [disabled]="product.stock === 0 || isProductAdded(product.id)"
+                [class]="getButtonClasses()"
+                [class.added]="isProductAdded(product.id)"
+                class="flex-1">
+                @if (product.stock === 0) {
+                  <span class="flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                    Agotado
+                  </span>
+                } @else if (isProductAdded(product.id)) {
+                  <span class="flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    Añadido
+                  </span>
+                } @else {
+                  <span class="flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                    Comprar
+                  </span>
+                }
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Estado vacío -->
+      <ng-template #emptyState>
+        <div class="text-center py-20">
+          <div [innerHTML]="config().icon" 
+               class="w-32 h-32 text-gray-600 mx-auto mb-6">
+          </div>
+          <h3 class="text-2xl font-bold text-gray-400 mb-4">
+            No se encontraron juegos
+          </h3>
+          <p class="text-gray-500">
+            Intenta ajustar los filtros de búsqueda
+          </p>
+          <button 
+            (click)="clearFilters()"
+            class="mt-6 px-6 py-3 rounded-lg font-semibold transition-all duration-300 text-white"
+            [ngClass]="'bg-' + config().accentColor + '-600 hover:bg-' + config().accentColor + '-700'">
+            Limpiar Filtros
+          </button>
+        </div>
+      </ng-template>
+    </div>
+  </section>
+</div>

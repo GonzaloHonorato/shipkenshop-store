@@ -1,0 +1,470 @@
+<!-- Hero Carousel Section -->
+<section class="relative pt-20 pb-16 px-4 overflow-hidden">
+  <div class="container mx-auto">
+    <div class="relative rounded-3xl overflow-hidden shadow-2xl">
+      <!-- Carousel Slides -->
+      <div class="relative h-[500px] bg-gray-900">
+        <div class="absolute inset-0 bg-gradient-to-r transition-all duration-700"
+             [ngClass]="'bg-gradient-to-r ' + currentSlide().gradient">
+
+          <div class="container mx-auto h-full flex items-center">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center w-full px-8">
+              <!-- Content -->
+              <div class="text-white space-y-6 fade-in">
+                <div class="inline-block bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
+                  <span class="text-sm font-semibold">{{ currentSlide().subtitle }}</span>
+                </div>
+                <h2 class="text-5xl md:text-6xl font-bold leading-tight">
+                  {{ currentSlide().title }}
+                </h2>
+                <p class="text-xl text-gray-200">
+                  {{ currentSlide().description }}
+                </p>
+                <button class="bg-white text-gray-900 px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transition-all transform hover:scale-105">
+                  {{ currentSlide().cta }}
+                </button>
+              </div>
+
+              <!-- Icon -->
+              <div class="hidden md:flex justify-center items-center">
+                <div class="w-64 h-64 text-white/30 bounce-animation" [innerHTML]="currentSlide().icon"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Carousel Controls -->
+      <button
+        (click)="prevSlide()"
+        class="absolute left-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-3 rounded-full backdrop-blur-sm transition-all z-10">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+      </button>
+
+      <button
+        (click)="nextSlide()"
+        class="absolute right-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-3 rounded-full backdrop-blur-sm transition-all z-10">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </button>
+
+      <!-- Indicators -->
+      <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+        <button
+          *ngFor="let slide of heroSlides; let i = index"
+          (click)="goToSlide(i)"
+          class="w-2 h-2 rounded-full transition-all"
+          [class.bg-white]="i === currentSlideIndex()"
+          [class.bg-white/30]="i !== currentSlideIndex()"
+          [class.w-8]="i === currentSlideIndex()">
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Products Section -->
+<section class="py-16 px-4">
+  <div class="container mx-auto">
+    <div class="flex items-center justify-between mb-12">
+      <div>
+        <h3 class="text-4xl md:text-5xl font-bold text-white mb-2">
+          🌟 Productos Destacados
+        </h3>
+        <p class="text-gray-400 text-lg">Los mejores juegos seleccionados para ti</p>
+      </div>
+      <a routerLink="/categories/accion" class="hidden md:inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 font-semibold">
+        Ver todos
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div *ngFor="let product of featuredProducts(); trackBy: trackByProductId"
+           class="bg-gray-800 bg-opacity-50 backdrop-blur-sm rounded-2xl overflow-hidden shadow-xl hover:shadow-purple-500/50 transition-all duration-300 transform hover:-translate-y-2 border border-purple-500/30">
+        <a [routerLink]="['/product', product.id]" class="block">
+          <div class="relative h-48 overflow-hidden bg-gradient-to-br from-purple-600 to-pink-600">
+            <img *ngIf="product.image"
+                 [src]="product.image"
+                 [alt]="product.name"
+                 class="w-full h-full object-cover transition-transform duration-300 hover:scale-110">
+
+            <div *ngIf="product.discount && product.discount > 0"
+                 class="absolute top-3 right-3">
+              <span class="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-bold pulse">
+                -{{ product.discount }}%
+              </span>
+            </div>
+          </div>
+
+          <div class="p-5">
+            <h4 class="text-xl font-bold text-white mb-2 line-clamp-1">{{ product.name }}</h4>
+            <p class="text-gray-400 text-sm mb-3 line-clamp-2">{{ product.description }}</p>
+
+            <div class="flex items-center justify-between">
+              <div>
+                <p *ngIf="product.originalPrice && product.originalPrice > product.price"
+                   class="text-gray-500 line-through text-sm">
+                  ${{ formatPrice(product.originalPrice) }}
+                </p>
+                <p class="text-2xl font-bold text-purple-400">
+                  ${{ formatPrice(product.price) }}
+                </p>
+              </div>
+              <span class="text-yellow-400">★ {{ product.rating }}</span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Best Sellers Section -->
+<section class="py-16 px-4 bg-gray-900/30">
+  <div class="container mx-auto">
+    <div class="flex items-center justify-between mb-12">
+      <div>
+        <h3 class="text-4xl md:text-5xl font-bold text-white mb-2">
+          🔥 Más Vendidos
+        </h3>
+        <p class="text-gray-400 text-lg">Los favoritos de nuestra comunidad</p>
+      </div>
+      <a routerLink="/categories/rpg" class="hidden md:inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 font-semibold">
+        Ver todos
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div *ngFor="let product of bestSellerProducts(); trackBy: trackByProductId; let i = index"
+           class="bg-gray-800 bg-opacity-50 backdrop-blur-sm rounded-2xl overflow-hidden shadow-xl hover:shadow-red-500/50 transition-all duration-300 transform hover:-translate-y-2 border border-red-500/30">
+        <a [routerLink]="['/product', product.id]" class="block">
+          <div class="relative h-48 overflow-hidden bg-gradient-to-br from-red-600 to-orange-600">
+            <img *ngIf="product.image"
+                 [src]="product.image"
+                 [alt]="product.name"
+                 class="w-full h-full object-cover transition-transform duration-300 hover:scale-110">
+
+            <div class="absolute top-3 left-3">
+              <span class="bg-yellow-500 text-black px-3 py-1 rounded-full text-sm font-bold">
+                #{{ i + 1 }} Best Seller
+              </span>
+            </div>
+
+            <div *ngIf="product.discount && product.discount > 0"
+                 class="absolute top-3 right-3">
+              <span class="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-bold pulse">
+                -{{ product.discount }}%
+              </span>
+            </div>
+          </div>
+
+          <div class="p-5">
+            <h4 class="text-xl font-bold text-white mb-2 line-clamp-1">{{ product.name }}</h4>
+            <p class="text-gray-400 text-sm mb-3 line-clamp-2">{{ product.description }}</p>
+
+            <div class="flex items-center justify-between mb-2">
+              <div>
+                <p *ngIf="product.originalPrice && product.originalPrice > product.price"
+                   class="text-gray-500 line-through text-sm">
+                  ${{ formatPrice(product.originalPrice) }}
+                </p>
+                <p class="text-2xl font-bold text-red-400">
+                  ${{ formatPrice(product.price) }}
+                </p>
+              </div>
+              <span class="text-yellow-400">★ {{ product.rating }}</span>
+            </div>
+            <p class="text-gray-500 text-xs">{{ product.reviews }} reseñas</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- New Releases Section -->
+<section class="py-16 px-4">
+  <div class="container mx-auto">
+    <div class="flex items-center justify-between mb-12">
+      <div>
+        <h3 class="text-4xl md:text-5xl font-bold text-white mb-2">
+          ✨ Recién Lanzados
+        </h3>
+        <p class="text-gray-400 text-lg">Los títulos más nuevos del mercado</p>
+      </div>
+      <a routerLink="/categories/estrategia" class="hidden md:inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 font-semibold">
+        Ver todos
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div *ngFor="let product of newReleaseProducts(); trackBy: trackByProductId"
+           class="bg-gray-800 bg-opacity-50 backdrop-blur-sm rounded-2xl overflow-hidden shadow-xl hover:shadow-green-500/50 transition-all duration-300 transform hover:-translate-y-2 border border-green-500/30">
+        <a [routerLink]="['/product', product.id]" class="block">
+          <div class="relative h-48 overflow-hidden bg-gradient-to-br from-green-600 to-teal-600">
+            <img *ngIf="product.image"
+                 [src]="product.image"
+                 [alt]="product.name"
+                 class="w-full h-full object-cover transition-transform duration-300 hover:scale-110">
+
+            <div class="absolute top-3 left-3">
+              <span class="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-bold pulse">
+                🆕 Nuevo
+              </span>
+            </div>
+
+            <div *ngIf="product.discount && product.discount > 0"
+                 class="absolute top-3 right-3">
+              <span class="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-bold">
+                -{{ product.discount }}%
+              </span>
+            </div>
+          </div>
+
+          <div class="p-5">
+            <h4 class="text-xl font-bold text-white mb-2 line-clamp-1">{{ product.name }}</h4>
+            <p class="text-gray-400 text-sm mb-3 line-clamp-2">{{ product.description }}</p>
+
+            <div class="flex items-center justify-between">
+              <div>
+                <p *ngIf="product.originalPrice && product.originalPrice > product.price"
+                   class="text-gray-500 line-through text-sm">
+                  ${{ formatPrice(product.originalPrice) }}
+                </p>
+                <p class="text-2xl font-bold text-green-400">
+                  ${{ formatPrice(product.price) }}
+                </p>
+              </div>
+              <span class="text-yellow-400">★ {{ product.rating }}</span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Random Selection Section -->
+<section class="py-16 px-4 bg-gray-900/30">
+  <div class="container mx-auto">
+    <div class="flex items-center justify-between mb-12">
+      <div>
+        <h3 class="text-4xl md:text-5xl font-bold text-white mb-2">
+          🎲 Descubre Algo Nuevo
+        </h3>
+        <p class="text-gray-400 text-lg">Una selección aleatoria para ti</p>
+      </div>
+      <a routerLink="/categories/aventura" class="hidden md:inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 font-semibold">
+        Ver todos
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div *ngFor="let product of randomProducts(); trackBy: trackByProductId"
+           class="bg-gray-800 bg-opacity-50 backdrop-blur-sm rounded-2xl overflow-hidden shadow-xl hover:shadow-blue-500/50 transition-all duration-300 transform hover:-translate-y-2 border border-blue-500/30">
+        <a [routerLink]="['/product', product.id]" class="block">
+          <div class="relative h-48 overflow-hidden bg-gradient-to-br from-blue-600 to-cyan-600">
+            <img *ngIf="product.image"
+                 [src]="product.image"
+                 [alt]="product.name"
+                 class="w-full h-full object-cover transition-transform duration-300 hover:scale-110">
+
+            <div *ngIf="product.discount && product.discount > 0"
+                 class="absolute top-3 right-3">
+              <span class="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-bold pulse">
+                -{{ product.discount }}%
+              </span>
+            </div>
+          </div>
+
+          <div class="p-5">
+            <h4 class="text-xl font-bold text-white mb-2 line-clamp-1">{{ product.name }}</h4>
+            <p class="text-gray-400 text-sm mb-3 line-clamp-2">{{ product.description }}</p>
+
+            <div class="flex items-center justify-between">
+              <div>
+                <p *ngIf="product.originalPrice && product.originalPrice > product.price"
+                   class="text-gray-500 line-through text-sm">
+                  ${{ formatPrice(product.originalPrice) }}
+                </p>
+                <p class="text-2xl font-bold text-blue-400">
+                  ${{ formatPrice(product.price) }}
+                </p>
+              </div>
+              <span class="text-yellow-400">★ {{ product.rating }}</span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Categories Section -->
+<section id="categorias" class="py-20 px-4">
+  <div class="container mx-auto">
+    <h3 class="text-4xl md:text-5xl font-bold text-white text-center mb-4">
+      Explora por Categorías
+    </h3>
+    <p class="text-gray-400 text-center text-lg mb-16">Encuentra tu género favorito</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <!-- Categoría 1: Acción -->
+      <div class="category-card bg-gray-800 bg-opacity-50 backdrop-blur-sm rounded-2xl overflow-hidden shadow-2xl hover:shadow-red-500/50 transition-all duration-300 transform hover:-translate-y-2 border border-red-500/30">
+        <a routerLink="/categories/accion" class="block">
+          <div class="relative h-64 overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-red-600 to-orange-500 flex items-center justify-center">
+              <svg class="w-32 h-32 text-white opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="p-6">
+            <h4 class="text-2xl font-bold text-white mb-2">Acción</h4>
+            <p class="text-gray-300">Vive la adrenalina de los juegos más intensos</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- Categoría 2: RPG -->
+      <div class="category-card bg-gray-800 bg-opacity-50 backdrop-blur-sm rounded-2xl overflow-hidden shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 transform hover:-translate-y-2 border border-purple-500/30">
+        <a routerLink="/categories/rpg" class="block">
+          <div class="relative h-64 overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-purple-600 to-indigo-700 flex items-center justify-center">
+              <svg class="w-32 h-32 text-white opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="p-6">
+            <h4 class="text-2xl font-bold text-white mb-2">RPG</h4>
+            <p class="text-gray-300">Aventuras épicas y mundos por descubrir</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- Categoría 3: Estrategia -->
+      <div class="category-card bg-gray-800 bg-opacity-50 backdrop-blur-sm rounded-2xl overflow-hidden shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 transform hover:-translate-y-2 border border-blue-500/30">
+        <a routerLink="/categories/estrategia" class="block">
+          <div class="relative h-64 overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center">
+              <svg class="w-32 h-32 text-white opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="p-6">
+            <h4 class="text-2xl font-bold text-white mb-2">Estrategia</h4>
+            <p class="text-gray-300">Pon a prueba tu ingenio y planificación</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- Categoría 4: Aventura -->
+      <div class="category-card bg-gray-800 bg-opacity-50 backdrop-blur-sm rounded-2xl overflow-hidden shadow-2xl hover:shadow-green-500/50 transition-all duration-300 transform hover:-translate-y-2 border border-green-500/30">
+        <a routerLink="/categories/aventura" class="block">
+          <div class="relative h-64 overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-green-600 to-teal-500 flex items-center justify-center">
+              <svg class="w-32 h-32 text-white opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="p-6">
+            <h4 class="text-2xl font-bold text-white mb-2">Aventura</h4>
+            <p class="text-gray-300">Explora mundos fascinantes y misteriosos</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Benefits Section -->
+<section class="py-20 px-4 bg-gradient-to-br from-gray-900 to-black">
+  <div class="container mx-auto">
+    <h3 class="text-4xl md:text-5xl font-bold text-white text-center mb-4">
+      ¿Por qué elegir ShikenShop?
+    </h3>
+    <p class="text-gray-400 text-center text-lg mb-16">Beneficios que marcan la diferencia</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div class="feature-card bg-gray-800/50 backdrop-blur-sm p-8 rounded-2xl border border-purple-500/30 hover:border-purple-500 transition-all">
+        <div class="text-purple-400 mb-4 flex justify-center">
+          <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+          </svg>
+        </div>
+        <h4 class="text-2xl font-bold text-white mb-3 text-center">Pagos Seguros</h4>
+        <p class="text-gray-300 text-center">Múltiples métodos de pago protegidos con encriptación SSL</p>
+      </div>
+
+      <div class="feature-card bg-gray-800/50 backdrop-blur-sm p-8 rounded-2xl border border-blue-500/30 hover:border-blue-500 transition-all">
+        <div class="text-blue-400 mb-4 flex justify-center">
+          <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+          </svg>
+        </div>
+        <h4 class="text-2xl font-bold text-white mb-3 text-center">Entrega Inmediata</h4>
+        <p class="text-gray-300 text-center">Códigos digitales enviados al instante a tu email</p>
+      </div>
+
+      <div class="feature-card bg-gray-800/50 backdrop-blur-sm p-8 rounded-2xl border border-green-500/30 hover:border-green-500 transition-all">
+        <div class="text-green-400 mb-4 flex justify-center">
+          <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+        <h4 class="text-2xl font-bold text-white mb-3 text-center">Mejores Precios</h4>
+        <p class="text-gray-300 text-center">Descuentos exclusivos y cupones de hasta 50% OFF</p>
+      </div>
+
+      <div class="feature-card bg-gray-800/50 backdrop-blur-sm p-8 rounded-2xl border border-red-500/30 hover:border-red-500 transition-all">
+        <div class="text-red-400 mb-4 flex justify-center">
+          <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+          </svg>
+        </div>
+        <h4 class="text-2xl font-bold text-white mb-3 text-center">Garantía Total</h4>
+        <p class="text-gray-300 text-center">Satisfacción garantizada o te devolvemos tu dinero</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-20 px-4">
+  <div class="container mx-auto">
+    <div class="bg-gradient-to-r from-purple-600 to-pink-600 rounded-3xl p-12 text-center">
+      <h3 class="text-4xl md:text-5xl font-bold text-white mb-4">
+        ¿Listo para comenzar?
+      </h3>
+      <p class="text-xl text-white/90 mb-8">
+        Únete a miles de gamers que ya disfrutan de ShikenShop
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a routerLink="/register" class="bg-white text-purple-600 px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transition-all transform hover:scale-105">
+          Crear Cuenta
+        </a>
+        <a href="#categorias" class="bg-transparent border-2 border-white text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white hover:text-purple-600 transition-all">
+          Explorar Juegos
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

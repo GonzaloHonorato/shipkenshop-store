@@ -1,0 +1,78 @@
+/* ShikenShop Global Styles */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Animaciones personalizadas de ShikenShop */
+@layer utilities {
+  .logo-animation {
+    @apply animate-pulse-slow;
+  }
+  
+  .hero-title {
+    animation: fadeInUp 1s ease-out;
+  }
+  
+  .fade-in {
+    animation: fadeIn 1.5s ease-out 0.5s both;
+  }
+  
+  .slide-in {
+    animation: slideInUp 1s ease-out 0.3s both;
+  }
+  
+  .pulse-animation {
+    animation: pulse 2s infinite;
+  }
+  
+  .category-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .category-card:hover {
+    transform: translateY(-8px);
+  }
+}
+
+/* Keyframes para animaciones */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 40px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 30px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Base styles para el tema de ShikenShop */
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+  
+  body {
+    @apply bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 min-h-screen;
+  }
+}

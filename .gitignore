@@ -8,9 +8,4 @@
 **/*.sso
 **/*.p12
 
-# Spring projects (ignore everything)
-microservicio-arquetipo/
-shikenstoreapp-backend/
 
-# Angular frontend project (ignore everything)
-shiken-shop-angular/

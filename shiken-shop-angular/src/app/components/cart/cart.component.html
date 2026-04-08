@@ -1,0 +1,290 @@
+<!-- ===================================== -->
+<!-- CART PAGE COMPONENT -->
+<!-- ===================================== -->
+
+<div class="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 pt-24 pb-20">
+  <div class="container mx-auto px-4 max-w-7xl">
+    
+    <!-- Page Title -->
+    <div class="text-center mb-12">
+      <h1 class="text-5xl md:text-6xl font-bold text-white mb-4">
+        Tu <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">Carrito</span>
+      </h1>
+      <p class="text-gray-300 text-lg">
+        Revisa y confirma tu pedido
+      </p>
+    </div>
+
+    <!-- Empty Cart State -->
+    @if (isEmpty()) {
+      <div class="text-center py-20">
+        <div class="bg-gray-800/50 backdrop-blur-sm rounded-3xl p-12 border border-purple-500/30 max-w-2xl mx-auto">
+          <!-- Empty Cart Icon -->
+          <svg class="w-32 h-32 mx-auto text-gray-500 mb-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" 
+                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
+            </path>
+          </svg>
+          
+          <h3 class="text-3xl font-bold text-white mb-4">Tu carrito está vacío</h3>
+          <p class="text-gray-400 mb-8 text-lg">
+            ¡Explora nuestras categorías y encuentra tus juegos favoritos!
+          </p>
+          
+          <button 
+            (click)="goToCategories()"
+            class="inline-flex items-center gap-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-full font-semibold text-lg hover:scale-105 transform transition-all duration-300 shadow-lg hover:shadow-purple-500/25">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+            </svg>
+            Ver Juegos
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- Cart with Products -->
+    @if (!isEmpty()) {
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+        
+        <!-- Products List -->
+        <div class="xl:col-span-2">
+          <div class="space-y-6">
+            @for (item of cart(); track item.id; let i = $index) {
+              <div class="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 border border-purple-500/30 
+                          cart-item-enter hover:border-purple-500/50 transition-all duration-300">
+                
+                <div class="flex flex-col md:flex-row gap-6 items-center">
+                  
+                  <!-- Product Image -->
+                  <div class="relative flex-shrink-0">
+                    <img 
+                      [src]="item.image" 
+                      [alt]="item.name"
+                      class="w-full md:w-32 h-32 object-cover rounded-xl shadow-lg"
+                      loading="lazy">
+                    
+                    @if (getDiscountPercent(item) > 0) {
+                      <span class="absolute -top-2 -right-2 bg-gradient-to-r from-pink-600 to-red-600 
+                                   text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                        -{{ getDiscountPercent(item) }}%
+                      </span>
+                    }
+                  </div>
+                  
+                  <!-- Product Info -->
+                  <div class="flex-1 text-center md:text-left">
+                    <h4 class="text-xl font-bold text-white mb-2 hover:text-purple-400 transition-colors cursor-pointer"
+                        (click)="goToProduct(item.id)">
+                      {{ item.name }}
+                    </h4>
+                    
+                    <div class="flex items-center gap-3 justify-center md:justify-start mb-3">
+                      @if (item.originalPrice && item.originalPrice > item.price) {
+                        <span class="text-gray-500 line-through text-sm">
+                          {{ formatPrice(item.originalPrice) }}
+                        </span>
+                      }
+                      <span class="text-purple-400 font-bold text-lg">
+                        {{ formatPrice(item.price) }}
+                      </span>
+                    </div>
+                    
+                    <div class="text-gray-400 text-sm">
+                      Stock disponible: {{ item.maxStock }} unidades
+                    </div>
+                  </div>
+                  
+                  <!-- Quantity Controls -->
+                  <div class="flex items-center gap-4">
+                    
+                    <!-- Quantity Selector -->
+                    <div class="flex items-center gap-2 bg-gray-900/50 rounded-xl p-2 border border-gray-700">
+                      <button 
+                        (click)="decreaseQuantity(i)"
+                        class="w-10 h-10 flex items-center justify-center text-white hover:bg-purple-600 
+                               rounded-lg transition-all duration-200 hover:scale-105"
+                        [disabled]="item.quantity <= 0">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
+                        </svg>
+                      </button>
+                      
+                      <span class="text-white font-bold w-10 text-center text-lg">
+                        {{ item.quantity }}
+                      </span>
+                      
+                      <button 
+                        (click)="increaseQuantity(i)"
+                        class="w-10 h-10 flex items-center justify-center text-white hover:bg-purple-600 
+                               rounded-lg transition-all duration-200 hover:scale-105"
+                        [disabled]="item.quantity >= item.maxStock">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                      </button>
+                    </div>
+                    
+                    <!-- Remove Button -->
+                    <button 
+                      (click)="removeFromCart(i)"
+                      class="w-12 h-12 flex items-center justify-center text-red-400 hover:text-red-300 
+                             hover:bg-red-500/10 rounded-lg transition-all duration-200 hover:scale-105"
+                      title="Eliminar producto">
+                      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                        </path>
+                      </svg>
+                    </button>
+                  </div>
+                  
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="xl:col-span-1">
+          <div class="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 border border-purple-500/30 sticky top-24">
+            
+            <h3 class="text-2xl font-bold text-white mb-8 text-center">
+              Resumen del Pedido
+            </h3>
+            
+            <!-- Summary Details -->
+            <div class="space-y-4 mb-8">
+              <div class="flex justify-between items-center text-gray-300">
+                <span>Productos ({{ cartSummary().totalItems }})</span>
+                <span class="font-medium">{{ formatPrice(cartSummary().subtotal) }}</span>
+              </div>
+              
+              @if (cartSummary().totalDiscount > 0) {
+                <div class="flex justify-between items-center text-green-400">
+                  <span>Descuentos</span>
+                  <span class="font-medium">-{{ formatPrice(cartSummary().totalDiscount) }}</span>
+                </div>
+              }
+              
+              <div class="border-t border-gray-600 pt-4">
+                <div class="flex justify-between items-center text-xl font-bold text-white">
+                  <span>Total</span>
+                  <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
+                    {{ formatPrice(cartSummary().total) }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="space-y-4">
+              
+              <!-- Checkout Button -->
+              <button 
+                (click)="processCheckout()"
+                [disabled]="isProcessingCheckout() || isEmpty()"
+                class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-4 
+                       rounded-xl font-semibold text-lg hover:scale-105 transform transition-all duration-300 
+                       disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100
+                       shadow-lg hover:shadow-purple-500/25">
+                
+                @if (isProcessingCheckout()) {
+                  <div class="flex items-center justify-center gap-3">
+                    <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Procesando...
+                  </div>
+                } @else {
+                  <div class="flex items-center justify-center gap-3">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                            d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z">
+                      </path>
+                    </svg>
+                    Proceder al Pago
+                  </div>
+                }
+              </button>
+
+              <!-- Clear Cart Button -->
+              <button 
+                (click)="clearCart()"
+                [disabled]="isEmpty()"
+                class="w-full bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded-xl 
+                       font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                <div class="flex items-center justify-center gap-3">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                    </path>
+                  </svg>
+                  Vaciar Carrito
+                </div>
+              </button>
+              
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    }
+    
+  </div>
+</div>
+
+<!-- ===================================== -->
+<!-- SUCCESS CHECKOUT MODAL -->
+<!-- ===================================== -->
+
+@if (showCheckoutModal()) {
+  <div class="fixed inset-0 bg-black/75 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-gray-800 rounded-3xl max-w-md w-full p-8 border border-purple-500/30 
+                modal-enter shadow-2xl relative">
+      
+      <!-- Success Animation -->
+      <div class="text-center">
+        <div class="w-20 h-20 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full 
+                    flex items-center justify-center mx-auto mb-6 shadow-lg">
+          <svg class="w-12 h-12 text-white animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+        </div>
+        
+        <h3 class="text-3xl font-bold text-white mb-4">
+          ¡Compra Exitosa!
+        </h3>
+        
+        <p class="text-gray-300 mb-2">
+          Tu pedido ha sido procesado correctamente.
+        </p>
+        
+        <p class="text-sm text-gray-400 mb-6">
+          Número de orden: <span class="text-purple-400 font-mono">{{ orderNumber() }}</span>
+        </p>
+        
+        <p class="text-gray-300 mb-8">
+          Recibirás un correo con los detalles de tu compra.
+        </p>
+        
+        <button 
+          (click)="closeCheckoutModal()"
+          class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 
+                 rounded-xl font-semibold text-lg hover:scale-105 transform transition-all duration-300
+                 shadow-lg hover:shadow-purple-500/25">
+          <div class="flex items-center justify-center gap-3">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
+              </path>
+            </svg>
+            Continuar Comprando
+          </div>
+        </button>
+      </div>
+      
+    </div>
+  </div>
+}
