@@ -1,0 +1,16 @@
+# Oracle Wallet files
+**/wallet/
+**/wallet/**
+**/Wallet_*/
+**/Wallet_*/**
+**/cwallet.sso
+**/ewallet.p12
+**/*.sso
+**/*.p12
+
+# Spring projects (ignore everything)
+microservicio-arquetipo/
+shikenstoreapp-backend/
+
+# Angular frontend project (ignore everything)
+shiken-shop-angular/
