@@ -425,7 +425,7 @@ describe('AdminProductsComponent', () => {
       );
     });
 
-    it('should create new product with valid form', () => {
+    it('should create new product with valid form', fakeAsync(() => {
       component.openNewProductModal();
       component.productForm.patchValue({
         name: 'New Game',
@@ -440,15 +440,16 @@ describe('AdminProductsComponent', () => {
       });
 
       component.onSaveProduct();
+      tick();
 
       expect(dataService.createProduct).toHaveBeenCalled();
       expect(notificationService.success).toHaveBeenCalledWith(
         'Producto creado correctamente'
       );
       expect(component.isModalOpen()).toBe(false);
-    });
+    }));
 
-    it('should update existing product', () => {
+    it('should update existing product', fakeAsync(() => {
       component.editProduct(mockProduct);
       component.productForm.patchValue({
         name: 'Updated Game',
@@ -456,22 +457,24 @@ describe('AdminProductsComponent', () => {
       });
 
       component.onSaveProduct();
+      tick();
 
       expect(dataService.updateProduct).toHaveBeenCalled();
       expect(notificationService.success).toHaveBeenCalledWith(
         'Producto actualizado correctamente'
       );
-    });
+    }));
 
-    it('should delete product with confirmation', () => {
+    it('should delete product with confirmation', fakeAsync(() => {
       spyOn(window, 'confirm').and.returnValue(true);
-      dataService.deleteProduct.and.returnValue(true);
+      dataService.deleteProduct.and.returnValue(Promise.resolve(true));
 
       component.deleteProduct(mockProduct);
+      tick();
 
       expect(dataService.deleteProduct).toHaveBeenCalledWith(mockProduct.id);
       expect(notificationService.success).toHaveBeenCalled();
-    });
+    }));
 
     it('should not delete product if not confirmed', () => {
       spyOn(window, 'confirm').and.returnValue(false);
@@ -481,12 +484,13 @@ describe('AdminProductsComponent', () => {
       expect(dataService.deleteProduct).not.toHaveBeenCalled();
     });
 
-    it('should toggle product status', () => {
+    it('should toggle product status', fakeAsync(() => {
       component.toggleProductStatus(mockProduct);
+      tick();
 
       expect(dataService.updateProduct).toHaveBeenCalled();
       expect(notificationService.success).toHaveBeenCalled();
-    });
+    }));
   });
 
   // ===================================

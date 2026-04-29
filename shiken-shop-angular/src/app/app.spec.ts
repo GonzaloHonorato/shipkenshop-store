@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { Component } from '@angular/core';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { App } from './app';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 
@@ -9,9 +10,11 @@ describe('App', () => {
     await TestBed.configureTestingModule({
       imports: [App],
       providers: [
-        provideRouter([]) // Proveedor de router para componentes standalone
+        provideRouter([]),
+        provideHttpClient(),
+        provideHttpClientTesting()
       ],
-      schemas: [NO_ERRORS_SCHEMA] // Ignorar componentes hijos desconocidos
+      schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
   });

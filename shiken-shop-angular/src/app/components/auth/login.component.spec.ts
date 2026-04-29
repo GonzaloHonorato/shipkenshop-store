@@ -425,4 +425,98 @@ describe('LoginComponent', () => {
       expect(trimmedValue).toBe('test@example.com');
     });
   });
+
+  // ===================================
+  // TESTS DE COBERTURA ADICIONAL
+  // ===================================
+
+  describe('Additional branch coverage', () => {
+    it('should show success notification when coming from registration', () => {
+      const activatedRouteSpy = TestBed.inject(ActivatedRoute) as jasmine.SpyObj<ActivatedRoute>;
+      (activatedRouteSpy.snapshot as any) = { queryParams: { returnUrl: '/', registered: 'true' } };
+      component.ngOnInit();
+      expect(notificationService.success).toHaveBeenCalled();
+    });
+
+    it('should redirect admin to /admin/dashboard on login', fakeAsync(async () => {
+      component.loginForm.patchValue({ identifier: 'admin@test.com', password: 'Password123' });
+      authService.login.and.returnValue(Promise.resolve({ success: true, message: 'ok' }));
+      authService.currentUser.and.returnValue({ role: 'admin', name: 'Admin', email: 'admin@test.com' } as any);
+      component.onSubmit();
+      tick();
+      expect(router.navigate).toHaveBeenCalledWith(['/admin/dashboard']);
+    }));
+
+    it('should navigate to returnUrl when it is not /', fakeAsync(async () => {
+      component.returnUrl = '/cart';
+      component.loginForm.patchValue({ identifier: 'buyer@test.com', password: 'Password123' });
+      authService.login.and.returnValue(Promise.resolve({ success: true, message: 'ok' }));
+      authService.currentUser.and.returnValue({ role: 'buyer', name: 'Buyer', email: 'buyer@test.com' } as any);
+      const routerSpy = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+      routerSpy.navigateByUrl = jasmine.createSpy('navigateByUrl').and.returnValue(Promise.resolve(true));
+      component.onSubmit();
+      tick();
+      expect(routerSpy.navigateByUrl).toHaveBeenCalledWith('/cart');
+    }));
+
+    it('should show attempts message and clear password after 3 failed attempts', fakeAsync(async () => {
+      component.loginForm.patchValue({ identifier: 'user@test.com', password: 'WrongPass' });
+      authService.login.and.returnValue(Promise.resolve({ success: false, message: 'Error' }));
+      component.loginAttempts = 2;
+      component.onSubmit();
+      tick();
+      expect(notificationService.error).toHaveBeenCalled();
+      expect(notificationService.warning).toHaveBeenCalled();
+    }));
+
+    it('should call onFieldChange and lowercase email', () => {
+      const event = { target: { value: 'TEST@EXAMPLE.COM' } } as unknown as Event;
+      component.loginForm.get('identifier')?.setValue('TEST@EXAMPLE.COM');
+      component.onFieldChange('identifier', event);
+      expect(component.loginForm.get('identifier')?.value).toBe('test@example.com');
+    });
+
+    it('should not change non-email field in onFieldChange', () => {
+      const event = { target: { value: 'somevalue' } } as unknown as Event;
+      expect(() => component.onFieldChange('password', event)).not.toThrow();
+    });
+
+    it('should redirect unknown role to / from redirectBasedOnRole', fakeAsync(async () => {
+      component.loginForm.patchValue({ identifier: 'user@test.com', password: 'Password123' });
+      authService.login.and.returnValue(Promise.resolve({ success: true, message: 'ok' }));
+      authService.currentUser.and.returnValue({ role: 'unknown', name: 'User', email: 'user@test.com' } as any);
+      component.onSubmit();
+      tick();
+      expect(router.navigate).toHaveBeenCalledWith(['/']);
+    }));
+
+    it('should handle onFieldKeyDown for Enter key', () => {
+      component.loginForm.patchValue({ identifier: 'test@test.com', password: 'Pass123' });
+      authService.login.and.returnValue(Promise.resolve({ success: false, message: 'err' }));
+      const event = { key: 'Enter', preventDefault: jasmine.createSpy() } as unknown as KeyboardEvent;
+      expect(() => component.onFieldKeyDown('identifier', event)).not.toThrow();
+    });
+
+    it('should prevent space in identifier on keydown', () => {
+      const event = { key: ' ', preventDefault: jasmine.createSpy() } as unknown as KeyboardEvent;
+      component.onFieldKeyDown('identifier', event);
+      expect((event as any).preventDefault).toHaveBeenCalled();
+    });
+
+    it('should handle onFieldBlur', () => {
+      expect(() => component.onFieldBlur('identifier')).not.toThrow();
+    });
+
+    it('should handle onFieldFocus', () => {
+      expect(() => component.onFieldFocus('identifier')).not.toThrow();
+    });
+
+    it('should use default error message when result.message is undefined', fakeAsync(async () => {
+      component.loginForm.patchValue({ identifier: 'user@test.com', password: 'WrongPass' });
+      authService.login.and.returnValue(Promise.resolve({ success: false, message: undefined as any }));
+      component.onSubmit();
+      tick();
+      expect(notificationService.error).toHaveBeenCalledWith(jasmine.stringContaining('Error al iniciar sesión'));
+    }));
+  });
 });

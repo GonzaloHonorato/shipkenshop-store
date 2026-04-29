@@ -7,6 +7,10 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "test:coverage": "ng test --no-watch --code-coverage",
+    "test:ci": "ng test --no-watch --code-coverage --browsers=ChromeHeadlessCI",
+    "sonar": "sonar-scanner",
+    "sonar:run": "npm run test:coverage && npm run sonar",
     "docs": "npm run docs:compodoc && npm run docs:jsdoc",
     "docs:compodoc": "compodoc -p tsconfig.json -d documentation/compodoc --theme material",
     "docs:compodoc:serve": "compodoc -p tsconfig.json -s -d documentation/compodoc --theme material",
@@ -39,6 +43,7 @@
   },
   "devDependencies": {
     "@angular/build": "^20.3.9",
+    "sonarqube-scanner": "^4.2.3",
     "@angular/cli": "^20.3.9",
     "@angular/compiler-cli": "^20.3.0",
     "@compodoc/compodoc": "^1.1.32",
